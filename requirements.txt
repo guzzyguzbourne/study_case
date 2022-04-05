@@ -14,9 +14,6 @@ numpy==1.22.3
 pandas==1.4.2
 Pillow==9.1.0
 PyQt5==5.12.3
-PyQtChart==5.12
-PyQtWebEngine==5.12.1
-pytz==2022.1
 scikit-learn==1.0.2
 scipy==1.8.0
 seaborn==0.11.2
@@ -24,6 +21,5 @@ skfeature-chappers==1.1.0
 threadpoolctl==3.1.0
 webencodings==0.5.1
 Werkzeug==2.1.1
-xgboost==1.4.2
 xlrd==1.2.0
 zipp==3.5.0
