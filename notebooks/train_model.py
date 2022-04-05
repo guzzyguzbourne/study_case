@@ -9,7 +9,8 @@ import pandas as pd
 import numpy as np
 import joblib
 
-DATASET_PATH = "../data/dataset.csv"
+#PATH1 ="/Users/gzner/KLARNA_CASE_STUDY/artifacts"
+DATASET_PATH = "/Users/gzner/KLARNA_CASE_STUDY/data/dataset.csv"
 TARGET = "default"
 REQUIRED_COLUMNS = ['account_amount_added_12_24m', 'account_days_in_dc_12_24m',
        'account_days_in_rem_12_24m', 'account_days_in_term_12_24m', 'age',
@@ -48,7 +49,7 @@ def prepare_data(df):
         if col_name not in df.columns:
             print('Writing the data to csv file where required column values are missing')
             df[df[REQUIRED_COLUMNS].isnull().any(axis=1)].to_csv(
-                '../artifacts/required_columns_values_missing.csv')
+                '/Users/gzner/KLARNA_CASE_STUDY/artifacts/required_columns_values_missing.csv')
             raise Exception('Required column  is missing:{}', format(col_name))
 
             
@@ -93,7 +94,7 @@ def prepare_data(df):
     df['has_paid'] = df['has_paid'].astype('object')
     
     # 4. Select columns of training data    
-    model_columns = joblib.load("../artifacts/Prob_Default_Klarna_InputNames3.pkl")
+    model_columns = joblib.load("/Users/gzner/KLARNA_CASE_STUDY/artifacts/Prob_Default_Klarna_InputNames3.pkl")
     uuid = df["uuid"]
     df = df[model_columns]
     for col in df.filter(regex='status').columns:
@@ -104,7 +105,7 @@ def prepare_data(df):
     df_numerical = df[df.select_dtypes(exclude = "object").columns]
     
     # load iterative imputer from disk
-    imputer = joblib.load("../artifacts/iterative_imputer.pkl")
+    imputer = joblib.load("/Users/gzner/KLARNA_CASE_STUDY/artifacts/iterative_imputer.pkl")
     df_num_imp = imputer.transform(df_numerical)
     df_num_imp = pd.DataFrame(df_num_imp)
     df_num_imp.columns = df_numerical.columns
@@ -116,8 +117,8 @@ def prepare_data(df):
     
     # load one hot encoder from disk
     
-    simp_imp = joblib.load("../artifacts/simple_imputer.pkl")
-    one_hot_encoder = joblib.load("../artifacts/one_hot_encoder.pkl")
+    simp_imp = joblib.load("/Users/gzner/KLARNA_CASE_STUDY/artifacts/simple_imputer.pkl")
+    one_hot_encoder = joblib.load("/Users/gzner/KLARNA_CASE_STUDY/artifacts/one_hot_encoder.pkl")
     df_one_hot = one_hot_encoder.transform(df_categorical)
     df_one_hot = simp_imp.transform(pd.DataFrame(df_one_hot.toarray()))
     df_one_hot = pd.DataFrame(df_one_hot)
@@ -133,7 +134,7 @@ def predict_default(df_final):
     """This function is used to predict the default and write the result to ../artifacts/prediction.csv file"""
 
     # load model from disk
-    sgd_model = joblib.load("../artifacts/default_predictor_sgd.pkl")
+    sgd_model = joblib.load("/Users/gzner/KLARNA_CASE_STUDY/artifacts/default_predictor_sgd.pkl")
 
     if 'uuid' in df_final.columns:
 
@@ -144,7 +145,7 @@ def predict_default(df_final):
         df_final['default_prediction'] = sgd_model.predict(df_final)
         prediction = df_final['default_prediction']
 
-    prediction.to_csv('../artifacts/prediction.csv')
+    prediction.to_csv('/Users/gzner/KLARNA_CASE_STUDY/artifacts/prediction.csv')
 
     print('Successfully predicted the data, please check: ../artifacts/prediction.csv')
     return prediction
