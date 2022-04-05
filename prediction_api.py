@@ -31,19 +31,19 @@ def index():
     return render_template('upload_file.html')
 
 
-ALLOWED_EXTENSIONS = {'xlsx'}
+ALLOWED_EXTENSIONS = {'csv'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/data', methods=['POST', 'GET'])
 def home_page():
     if request.method == 'POST':
         file = request.files['file']
         if file:
             if allowed_file(file.filename):
-                df = pd.read_excel(request.files.get('file'),  engine = 'openpyxl')
+                df = pd.read_csv(request.files.get('file'))
                 for col in REQUIRED_COLUMNS:
                     if col not in df.columns:
                         return "One more required columns are missing. List of required columns are = {} ".format(REQUIRED_COLUMNS)
@@ -52,7 +52,7 @@ def home_page():
                 df_final = train_model.prepare_data(df)
                     
                 # 3. Prediction
-                prediction = train_model.predict(df_final)
+                prediction = train_model.predict_default(df_final)
                 return prediction.to_html(header="true", table_id="table")
 
         else:

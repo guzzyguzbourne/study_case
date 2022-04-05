@@ -147,3 +147,4 @@ def predict_default(df_final):
     prediction.to_csv('prediction.csv')
 
     print('Successfully predicted the data, please check: prediction.csv')
+    return prediction
